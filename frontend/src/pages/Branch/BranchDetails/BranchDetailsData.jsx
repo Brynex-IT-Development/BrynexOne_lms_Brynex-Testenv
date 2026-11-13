@@ -98,6 +98,7 @@ const BranchDetailsData = () => {
   const branchBrand = useMemo(() => {
     const n = String(data.workingBranch || "").toLowerCase();
     if (n.includes("zorucci")) return "Zorucci";
+    if (n.includes("bridesberry") || n.includes("brides berry") || n.includes("bb")) return "Bridesberry";
     if (n.includes("suitor") || n.includes("grooms") || n.includes("sg")) return "Suitor Guy";
     return "";
   }, [data.workingBranch]);

@@ -54,6 +54,8 @@ const BRANCH_LOCATION_MAPPING = {
   "g.kannur": "21", "g kannur": "21", "grooms kannur": "21", "suitor guy kannur": "21", "sg.kannur": "21", "sg kannur": "21", "sg.knr": "21",
   // G-MG Road (loc 23)
   "g.mg road": "23", "g.mgroad": "23", "g mg road": "23", "gmg road": "23", "grooms mg road": "23", "suitor guy mg road": "23", "sg.mg road": "23", "sg.mgroad": "23", "sg mg road": "23",
+  // BB-MG Road (loc 26)
+  "bb mg road": "26", "bb.mg road": "26", "bb.mgroad": "26", "bb mgroad": "26", "bbmg road": "26", "bbmgroad": "26", "bridesberry mg road": "26", "brides berry mg road": "26", "b- mg road": "26", "b-mg road": "26",
   // Dappr Squad (loc 25)
   "dappr squad": "25", "crsrootments": "25"
 };
@@ -97,6 +99,9 @@ function getBranchLocationId(workingBranch) {
   };
   for (const [city, locId] of Object.entries(CITY_TO_LOC)) {
     if (stripped.endsWith(city) || stripped.includes(city)) {
+      if (stripped.startsWith("b") || stripped.startsWith("bb") || stripped.startsWith("brides")) {
+        if (city.includes("mgroad")) return "26";
+      }
       if (stripped.startsWith("z") || stripped.startsWith("g") || stripped.startsWith("sg") ||
           stripped.startsWith("suitor") || stripped.startsWith("grooms") || stripped.startsWith("zorucci")) {
         if ((stripped.startsWith("z") || stripped.startsWith("zorucci")) && city.includes("edappal")) return city.includes("edappally") ? "1" : "6";
@@ -123,6 +128,15 @@ function getLocalDateString(date) {
   return `${year}-${month}-${day}`;
 }
 const STAFF_ALIAS_MAPPING = {
+  // Swalih
+  "muhammed swalih m": "MOHAMED SWALIH M",
+  "muhammedswalihm": "MOHAMED SWALIH M",
+  "muhammed swalih": "MOHAMED SWALIH M",
+  "mohamed swalih m": "MOHAMED SWALIH M",
+  "mohamed swalih": "MOHAMED SWALIH M",
+  "swalih m": "MOHAMED SWALIH M",
+  "swalih": "MOHAMED SWALIH M",
+
   // Ashiq
   "mohammed ashiq s": "M ASHIQ S",
   "mohammed ashiq": "M ASHIQ S",
@@ -861,7 +875,7 @@ const HomeBar = () => {
     if (!start || !end) return;
     setLoadingPerf(true);
     try {
-      const locationIds = ["1", "3", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "25"];
+      const locationIds = ["1", "3", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "25", "26"];
       const pTasks = locationIds.map((locId) => async () => {
         const data = await getPerformanceCached(locId, start, end);
         return { locId, data };

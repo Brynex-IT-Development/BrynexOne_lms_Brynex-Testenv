@@ -114,6 +114,8 @@ const BRANCH_LOCATION_MAPPING = {
   "g.kannur": "21", "g kannur": "21", "grooms kannur": "21", "suitor guy kannur": "21", "sg.kannur": "21", "sg kannur": "21", "sg.knr": "21",
   // G-MG Road (loc 23)
   "g.mg road": "23", "g.mgroad": "23", "g mg road": "23", "gmg road": "23", "grooms mg road": "23", "suitor guy mg road": "23", "sg.mg road": "23", "sg.mgroad": "23", "sg mg road": "23",
+  // BB-MG Road (loc 26)
+  "bb mg road": "26", "bb.mg road": "26", "bb.mgroad": "26", "bb mgroad": "26", "bbmg road": "26", "bbmgroad": "26", "bridesberry mg road": "26", "brides berry mg road": "26", "b- mg road": "26", "b-mg road": "26",
   // Dappr Squad (loc 25)
   "dappr squad": "25", "crsrootments": "25"
 };
@@ -247,6 +249,7 @@ function getBranchLocationId(workingBranch) {
     "gkalpetta": "20",
     "gkannur": "21",
     "gmgroad": "23",
+    "bbmgroad": "26",
     "dapprsquad": "25"
   };
 
@@ -290,7 +293,8 @@ const STORE_TO_LOC_CODE = {
   "gkannur": "716",
   "sgkannur": "716",
   "gmgroad": "718",
-  "sgmgroad": "718"
+  "sgmgroad": "718",
+  "bbmgroad": "155"
 };
 
 function getBranchLocCode(workingBranch, branchesList) {
@@ -453,13 +457,16 @@ function isEmployeeInStore(emp, targetStoreName, branchObj, branchesList = []) {
   if (targetLocCode && (emp.locCode === targetLocCode || getBranchLocCode(empBranch, branchesList) === targetLocCode)) return true;
 
   const isZ = /^z[.\-\s]/i.test(storeDisplay) || /zorucci/i.test(storeDisplay) || (branchObj && /^z/i.test(branchObj.workingBranch));
-  const isG = /^g[.\-\s]/i.test(storeDisplay) || /suitor/i.test(storeDisplay) || /sg/i.test(storeDisplay) || (branchObj && /^g/i.test(branchObj.workingBranch));
+  const isG = /^(?:g|sg)[.\-\s]/i.test(storeDisplay) || /suitor/i.test(storeDisplay) || /\bsg\b/i.test(storeDisplay) || (branchObj && (/^(?:g|sg)/i.test(branchObj.workingBranch) || /suitor/i.test(branchObj.workingBranch)));
+  const isBB = /^(?:b|bb)[.\-\s]/i.test(storeDisplay) || /bridesberry/i.test(storeDisplay) || /brides\s*berry/i.test(storeDisplay) || /\bbb\b/i.test(storeDisplay) || (branchObj && (/^(?:b|bb)/i.test(branchObj.workingBranch) || /bridesberry/i.test(branchObj.workingBranch)));
 
   const empIsZ = /^z[.\-\s]/i.test(empBranch) || /zorucci/i.test(empBranch);
-  const empIsG = /^g[.\-\s]/i.test(empBranch) || /suitor/i.test(empBranch) || /guy/i.test(empBranch);
+  const empIsG = /^(?:g|sg)[.\-\s]/i.test(empBranch) || /suitor/i.test(empBranch) || /guy/i.test(empBranch) || /\bsg\b/i.test(empBranch);
+  const empIsBB = /^(?:b|bb)[.\-\s]/i.test(empBranch) || /bridesberry/i.test(empBranch) || /brides\s*berry/i.test(empBranch) || /\bbb\b/i.test(empBranch);
 
-  if (isZ && empIsG) return false;
-  if (isG && empIsZ) return false;
+  if (isZ && (empIsG || empIsBB)) return false;
+  if (isG && (empIsZ || empIsBB)) return false;
+  if (isBB && (empIsZ || empIsG)) return false;
 
   const s = (storeDisplay + " " + (branchObj?.workingBranch || "")).toLowerCase();
   const e = empBranch.toLowerCase();
@@ -498,6 +505,15 @@ function normalizeForMatch(str) {
     .replace(/^dapper/, "dappr");
 }
 const STAFF_ALIAS_MAPPING = {
+  // Swalih
+  "muhammed swalih m": "MOHAMED SWALIH M",
+  "muhammedswalihm": "MOHAMED SWALIH M",
+  "muhammed swalih": "MOHAMED SWALIH M",
+  "mohamed swalih m": "MOHAMED SWALIH M",
+  "mohamed swalih": "MOHAMED SWALIH M",
+  "swalih m": "MOHAMED SWALIH M",
+  "swalih": "MOHAMED SWALIH M",
+
   // Ashiq
   "mohammed ashiq s": "M ASHIQ S",
   "mohammed ashiq": "M ASHIQ S",
@@ -2818,7 +2834,7 @@ const DSRReport = () => {
           periodEnd = appliedEndDate || todayStr;
         }
 
-        const locationIds = ["1", "3", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "25"];
+        const locationIds = ["1", "3", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "25", "26"];
 
         const getStoreNameFromLocId = (locId) => {
           const foundBranch = branches.find(b => getBranchLocationId(b.workingBranch) === locId);

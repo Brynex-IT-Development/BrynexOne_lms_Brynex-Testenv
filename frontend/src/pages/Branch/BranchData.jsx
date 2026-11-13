@@ -365,6 +365,7 @@ function brandKey(name) {
   const n = norm(name);
   if (/\bzorucci\b/.test(n)) return "zorucci";
   if (/\b(grooms|suitor|guy|sg)\b/.test(n)) return "suitor";
+  if (/\b(bb|bridesberry|brides\s*berry)\b/.test(n)) return "bridesberry";
   return ""; // unknown/none
 }
 
@@ -541,6 +542,7 @@ const BranchData = () => {
       const brand = brandKey(b?.workingBranch);
       if (brand === "zorucci") roles.add("Zorucci");
       if (brand === "suitor") roles.add("Suitor Guy");
+      if (brand === "bridesberry") roles.add("Bridesberry");
     });
     return ["All Roles", ...Array.from(roles)];
   }, [branch]);
@@ -567,7 +569,7 @@ const BranchData = () => {
         completeTraining,
         pendingTraining,
         trainingsDisplay,
-        roleLabel: brandKey(b?.workingBranch) === "zorucci" ? "Zorucci" : brandKey(b?.workingBranch) === "suitor" ? "Suitor Guy" : "Branch",
+        roleLabel: brandKey(b?.workingBranch) === "zorucci" ? "Zorucci" : brandKey(b?.workingBranch) === "suitor" ? "Suitor Guy" : brandKey(b?.workingBranch) === "bridesberry" ? "Bridesberry" : "Branch",
       };
     });
   }, [branch, progressByKey]);

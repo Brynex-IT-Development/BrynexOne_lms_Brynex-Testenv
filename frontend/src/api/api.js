@@ -133,16 +133,17 @@ export const formatStoreDisplayName = (rawName) => {
   }
 
   const isZ = lower.includes('zorucci') || lower.includes('orucci') || /^z[\.\-\s]/i.test(trimmed) || /^z$/i.test(trimmed);
+  const isBB = lower.includes('bridesberry') || lower.includes('brides berry') || /^(?:b|bb)[\.\-\s]/i.test(trimmed) || /^(?:b|bb)$/i.test(trimmed);
 
-  // Strip all repeated leading brand prefixes (e.g. "SG SUITOR GUY", "Z ORUCCI", "SG", "Z", etc.)
+  // Strip all repeated leading brand prefixes (e.g. "SG SUITOR GUY", "Z ORUCCI", "SG", "Z", "BB", etc.)
   let loc = trimmed
-    .replace(/^(?:(?:zorucci|orucci|suitor\s+guy|grooms|sg|g|z)[\.\-\s]*)+/i, '')
+    .replace(/^(?:(?:zorucci|orucci|suitor\s+guy|grooms|brides\s*berry|bb|b|sg|g|z)[\.\-\s]*)+/i, '')
     .replace(/\d+$/g, '')
     .trim();
 
   // Strip any remaining standalone brand tokens within loc
   loc = loc
-    .replace(/\b(?:zorucci|orucci|suitor\s+guy|grooms)\b/gi, '')
+    .replace(/\b(?:zorucci|orucci|suitor\s+guy|grooms|brides\s*berry|bridesberry)\b/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -178,7 +179,7 @@ export const formatStoreDisplayName = (rawName) => {
     }
   }
 
-  const prefix = isZ ? 'Z' : 'SG';
+  const prefix = isZ ? 'Z' : isBB ? 'BB' : 'SG';
   return `${prefix} ${loc}`.trim();
 };
 
