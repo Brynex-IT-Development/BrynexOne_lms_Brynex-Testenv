@@ -9,6 +9,22 @@ import * as XLSX from 'xlsx';
 
 /* ── helpers ─────────────────────────────────────────────────────────────── */
 const BRAND_TOKENS = new Set(["zorucci", "grooms", "suitor", "guy", "sg"]);
+
+const normalizeProductType = (val) => {
+  if (!val) return '';
+  const trimmed = String(val).trim();
+  if (!trimmed) return '';
+  // Only normalize products ending with suit/suite
+  if (/\b(?:suite|suit)s?$/i.test(trimmed)) {
+    const lower = trimmed.toLowerCase();
+    if (lower === '2 piece suite' || lower === '2 piece suit') return '2 Piece Suit';
+    if (lower === '3 piece suite' || lower === '3 piece suit') return '3 Piece Suit';
+    if (lower === 'kids suit' || lower === 'kids suite') return 'Kids Suit';
+    return trimmed.replace(/\b(?:suite)s?$/i, 'Suit').replace(/\b(?:suit)s?$/i, 'Suit');
+  }
+  return trimmed;
+};
+
 function canonFixes(s) {
   return s.replace(/\bedap{1,2}a?l{1,3}y\b/g,"edappally").replace(/\bedap{1,2}a?l{1,3}i\b/g,"edappally")
     .replace(/\bmanjeri\b/g,"manjery").replace(/\bperinthalmana\b/g,"perinthalmanna")
@@ -369,7 +385,7 @@ const getExportRows = (data, getState) => {
 
   const rows = data.map((w, i) => {
     const itemState = getState ? (getState(w) || w) : w;
-    const productType = w.lossProductType || '-';
+    const productType = normalizeProductType(w.lossProductType) || '-';
     const notesText = w.notes || '-';
 
     let displayLossReason = '-';
@@ -1501,7 +1517,7 @@ const WalkinReport = () => {
                       const itemState = getDisplayedState(w);
                       const sc = getStatusColors(itemState.status);
                       
-                      const productType = w.lossProductType || '–';
+                      const productType = normalizeProductType(w.lossProductType) || '–';
                       const notesText = w.notes || '–';
 
                       let displayLossReason = '–';

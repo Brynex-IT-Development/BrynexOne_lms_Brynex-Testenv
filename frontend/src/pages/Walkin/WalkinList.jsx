@@ -126,30 +126,17 @@ const HARDCODED_STORES = [
 
 const normalizeProductType = (val) => {
     if (!val) return '';
-    const lower = val.toLowerCase().trim();
-    if (lower === '2 piece suite' || lower === '2 piece suit') return '2 Piece Suit';
-    if (lower === '3 piece suite' || lower === '3 piece suit') return '3 Piece Suit';
-    if (lower === 'bandgala' || lower === 'bandhgala') return 'Bandhgala';
-    if (lower === 'indowestern') return 'Indowestern';
-    if (lower === 'kurtha') return 'Kurtha';
-    if (lower === 'kids suit' || lower === 'kids suite') return 'Kids Suit';
-    if (lower === 'lehanga') return 'Lehanga';
-    if (lower === 'pakistaani lehagha' || lower === 'pakistani lehagha' || lower === 'pakistani lehenga' || lower === 'pakistaani lehenga') return 'Pakistaani Lehagha';
-    if (lower === 'fancy saree') return 'Fancy Saree';
-    if (lower === 'partywear') return 'Partywear';
-    if (lower === 'heaithy dress' || lower === 'healthy dress') return 'Heaithy Dress';
-    if (lower === 'multy colur lehanga' || lower === 'multi color lehenga' || lower === 'multy color lehenga') return 'Multy Colur Lehanga';
-    if (lower === 'pakistaani gown' || lower === 'pakistani gown') return 'Pakistaani Gown';
-    if (lower === 'ball gown') return 'Ball Gown';
-    if (lower === 'body gown') return 'Body Gown';
-    if (lower === 'white gown') return 'White Gown';
-    if (lower === 'turkish gown') return 'Turkish Gown';
-    if (lower === 'arabic gown') return 'Arabic Gown';
-    if (lower === 'arabic lehanga' || lower === 'arabic lehenga') return 'Arabic Lehanga';
-    if (lower === 'jwellery' || lower === 'jewellery' || lower === 'jewelry') return 'Jwellery';
-    if (lower === 'oters' || lower === 'others') return 'Oters';
-    if (lower === 'sales' || lower === 'sale' || lower === 'sale products') return 'Sale Products';
-    return val.replace(/\b\w/g, c => c.toUpperCase()).replace(/Suite/g, 'Suit').replace(/suite/g, 'suit');
+    const trimmed = String(val).trim();
+    if (!trimmed) return '';
+    // Only normalize products ending with suit/suite
+    if (/\b(?:suite|suit)s?$/i.test(trimmed)) {
+        const lower = trimmed.toLowerCase();
+        if (lower === '2 piece suite' || lower === '2 piece suit') return '2 Piece Suit';
+        if (lower === '3 piece suite' || lower === '3 piece suit') return '3 Piece Suit';
+        if (lower === 'kids suit' || lower === 'kids suite') return 'Kids Suit';
+        return trimmed.replace(/\b(?:suite)s?$/i, 'Suit').replace(/\b(?:suit)s?$/i, 'Suit');
+    }
+    return trimmed;
 };
 
 const normalizeSubCategory = (val, category = '') => {
@@ -338,7 +325,7 @@ const getExportRows = (data) => {
   };
 
   const rows = (data || []).map((w, i) => {
-    const productType = w.lossProductType || '-';
+    const productType = normalizeProductType(w.lossProductType) || '-';
     const notesText = w.notes || '-';
 
     let displayLossReason = '-';
@@ -4077,7 +4064,7 @@ const sortStoresGThenZ = (a, b) => {
                                                 {currentItems.map((w, index) => {
                                                     const sc = getStatusColors(w.status);
 
-                                                    const productType = w.lossProductType || '–';
+                                                    const productType = normalizeProductType(w.lossProductType) || '–';
                                                     const notesText = w.notes || '–';
 
                                                     let displayLossReason = '–';

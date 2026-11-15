@@ -13,6 +13,21 @@ import { getISTDayRange, getISTRangeBetween, isInISTRange } from '../utils/dateR
 /* ---------- Location Name Normalization helpers ---------- */
 const BRAND_TOKENS = new Set(["zorucci", "grooms", "suitor", "guy", "sg"]);
 
+export function normalizeSuitProductType(val) {
+    if (!val || typeof val !== 'string') return val;
+    const trimmed = val.trim();
+    if (!trimmed) return trimmed;
+    // Strictly target values ending with suite or suit (case-insensitive)
+    if (/\b(?:suite|suit)s?$/i.test(trimmed)) {
+        const lower = trimmed.toLowerCase();
+        if (lower === '2 piece suite' || lower === '2 piece suit') return '2 Piece Suit';
+        if (lower === '3 piece suite' || lower === '3 piece suit') return '3 Piece Suit';
+        if (lower === 'kids suite' || lower === 'kids suit') return 'Kids Suit';
+        return trimmed.replace(/\b(?:suite)s?$/i, 'Suit').replace(/\b(?:suit)s?$/i, 'Suit');
+    }
+    return trimmed;
+}
+
 function canonFixes(s) {
     return s
         .replace(/\bedap{1,2}a?l{1,3}y\b/g, "edappally")
@@ -398,7 +413,7 @@ export const saveWalkin = async (req, res) => {
 
         const setOptionalLossFields = (record) => {
             if (notesVal !== undefined) record.notes = String(notesVal).trim();
-            if (lossProductTypeVal !== undefined) record.lossProductType = String(lossProductTypeVal).trim();
+            if (lossProductTypeVal !== undefined) record.lossProductType = normalizeSuitProductType(String(lossProductTypeVal).trim());
             if (lossSizeVal !== undefined) record.lossSize = String(lossSizeVal).trim();
             if (lossColourVal !== undefined) record.lossColour = String(lossColourVal).trim();
             if (lossSalesPriceVal !== undefined) record.lossSalesPrice = String(lossSalesPriceVal).trim();
@@ -620,7 +635,7 @@ export const saveWalkin = async (req, res) => {
                     attachmentName: (fileAttachment && fileAttachment.name) ? fileAttachment.name : walkinRecord.attachmentName,
                     remarks: remarks ? remarks.trim() : walkinRecord.remarks,
                     notes: notesVal !== undefined ? String(notesVal).trim() : walkinRecord.notes,
-                    lossProductType: lossProductTypeVal !== undefined ? String(lossProductTypeVal).trim() : walkinRecord.lossProductType,
+                    lossProductType: lossProductTypeVal !== undefined ? normalizeSuitProductType(String(lossProductTypeVal).trim()) : normalizeSuitProductType(walkinRecord.lossProductType),
                     lossSize: lossSizeVal !== undefined ? String(lossSizeVal).trim() : walkinRecord.lossSize,
                     lossColour: lossColourVal !== undefined ? String(lossColourVal).trim() : walkinRecord.lossColour,
                     lossSalesPrice: lossSalesPriceVal !== undefined ? String(lossSalesPriceVal).trim() : walkinRecord.lossSalesPrice,
@@ -940,7 +955,7 @@ export const saveWalkin = async (req, res) => {
                     attachmentName: (fileAttachment && fileAttachment.name) ? fileAttachment.name : '',
                     remarks: remarks ? remarks.trim() : '-',
                     notes: notesVal !== undefined ? String(notesVal).trim() : '',
-                    lossProductType: lossProductTypeVal !== undefined ? String(lossProductTypeVal).trim() : '',
+                    lossProductType: lossProductTypeVal !== undefined ? normalizeSuitProductType(String(lossProductTypeVal).trim()) : '',
                     lossSize: lossSizeVal !== undefined ? String(lossSizeVal).trim() : '',
                     lossColour: lossColourVal !== undefined ? String(lossColourVal).trim() : '',
                     lossSalesPrice: lossSalesPriceVal !== undefined ? String(lossSalesPriceVal).trim() : '',
