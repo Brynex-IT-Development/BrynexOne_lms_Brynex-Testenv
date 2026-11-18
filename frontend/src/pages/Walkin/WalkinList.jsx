@@ -39,10 +39,16 @@ function locationKey(name) {
     return tokens.join(" ");
 }
 
+const isBBStore = (storeName) => {
+    if (!storeName) return false;
+    const lower = String(storeName).toLowerCase().trim();
+    return lower.includes('bridesberry') || lower.includes('brides berry') || /^(?:b|bb)[.\-\s]/i.test(lower) || /^(?:b|bb)$/i.test(lower);
+};
+
 const isSalesProductType = (val) => {
     if (!val) return false;
     const lower = String(val).toLowerCase().trim();
-    return lower === 'sales' || lower === 'sale products' || lower === 'sale';
+    return lower === 'sales' || lower === 'sale products' || lower === 'sale product' || lower === 'sale';
 };
 
 const STATUS_OPTIONS = [
@@ -776,38 +782,40 @@ const sortStoresGThenZ = (a, b) => {
                                             {/* Custom fields under non-sales reasons */}
                                             {formData.lossReason === 'Product Already Booked' && (
                                                 <>
-                                                    <div className="col-span-12 md:col-span-3">
-                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Select Size<span className="text-red-500">*</span>
-                                                        </label>
-                                                        <div className="relative">
-                                                            <select
-                                                                name="lossSize"
-                                                                required
-                                                                value={formData.lossSize || ''}
-                                                                onChange={handleInputChange}
-                                                                className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white cursor-pointer appearance-none pr-8 font-semibold"
-                                                            >
-                                                                <option value="">Select Size</option>
-                                                                {['32', '34', '36', '38', '40', '42', '44', '46', '48', 'Others'].map((size) => (
-                                                                    <option key={size} value={size}>{size}</option>
-                                                                ))}
-                                                            </select>
-                                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                                                </svg>
+                                                    {!isBBStore(formData.store) && (
+                                                        <div className="col-span-12 md:col-span-3">
+                                                            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                                Select Size<span className="text-red-500">*</span>
+                                                            </label>
+                                                            <div className="relative">
+                                                                <select
+                                                                    name="lossSize"
+                                                                    required
+                                                                    value={formData.lossSize || ''}
+                                                                    onChange={handleInputChange}
+                                                                    className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white cursor-pointer appearance-none pr-8 font-semibold"
+                                                                >
+                                                                    <option value="">Select Size</option>
+                                                                    {['32', '34', '36', '38', '40', '42', '44', '46', '48', 'Others'].map((size) => (
+                                                                        <option key={size} value={size}>{size}</option>
+                                                                    ))}
+                                                                </select>
+                                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                                    </svg>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Colour<span className="text-red-500">*</span>
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             name="lossColour"
-                                                            required
+                                                            required={!isBBStore(formData.store)}
                                                             placeholder="Enter Colour"
                                                             value={formData.lossColour || ''}
                                                             onChange={handleInputChange}
@@ -878,29 +886,31 @@ const sortStoresGThenZ = (a, b) => {
                                                         />
                                                     </div>
                                                     {/* Size (Dropdown) */}
-                                                    <div className="col-span-12 md:col-span-3">
-                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Select Size <span className="text-red-500">*</span>
-                                                        </label>
-                                                        <div className="relative">
-                                                            <select required
-                                                                name="lossSize"
-                                                                value={formData.lossSize || ''}
-                                                                onChange={handleInputChange}
-                                                                className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white cursor-pointer appearance-none pr-8 font-semibold"
-                                                            >
-                                                                <option value="">Select Size</option>
-                                                                {['32', '34', '36', '38', '40', '42', '44', '46', '48', 'Others'].map((size) => (
-                                                                    <option key={size} value={size}>{size}</option>
-                                                                ))}
-                                                            </select>
-                                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                                                </svg>
+                                                    {!isBBStore(formData.store) && (
+                                                        <div className="col-span-12 md:col-span-3">
+                                                            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                                Select Size <span className="text-red-500">*</span>
+                                                            </label>
+                                                            <div className="relative">
+                                                                <select required
+                                                                    name="lossSize"
+                                                                    value={formData.lossSize || ''}
+                                                                    onChange={handleInputChange}
+                                                                    className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white cursor-pointer appearance-none pr-8 font-semibold"
+                                                                >
+                                                                    <option value="">Select Size</option>
+                                                                    {['32', '34', '36', '38', '40', '42', '44', '46', '48', 'Others'].map((size) => (
+                                                                        <option key={size} value={size}>{size}</option>
+                                                                    ))}
+                                                                </select>
+                                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                                    </svg>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                     {/* Product Category Dropdown: Premium, Non Premium, Ultra Luxury, Luxury */}
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
@@ -1199,16 +1209,61 @@ const sortStoresGThenZ = (a, b) => {
                                             </div>
 
                                             {/* Custom fields under sales categories */}
-                                            {((formData.subCategory || '').toLowerCase().trim() === 'shoe') && (
+                                            {isBBStore(formData.store) ? (
                                                 <>
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Colour<span className="text-red-500">*</span>
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             name="lossColour"
-                                                            required
+                                                            required={!isBBStore(formData.store)}
+                                                            placeholder="Enter Colour"
+                                                            value={formData.lossColour || ''}
+                                                            onChange={handleInputChange}
+                                                            className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white font-semibold"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-12 md:col-span-3">
+                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                            Price <span className="text-gray-400 font-normal">(Optional)</span>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="lossSalesPrice"
+                                                            placeholder="Enter Price"
+                                                            value={formData.lossSalesPrice || ''}
+                                                            onChange={handleInputChange}
+                                                            className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white font-semibold"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-12">
+                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                            Note <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <textarea required
+                                                            name="lossNote"
+                                                            rows={1}
+                                                            placeholder="Product Category / Item Name"
+                                                            value={formData.lossNote || ''}
+                                                            onChange={handleInputChange}
+                                                            className="w-full h-11 border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white placeholder-gray-300 resize-none font-semibold"
+                                                        />
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {((formData.subCategory || '').toLowerCase().trim() === 'shoe') && (
+                                                <>
+                                                    <div className="col-span-12 md:col-span-3">
+                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="lossColour"
+                                                            required={!isBBStore(formData.store)}
                                                             placeholder="Enter Colour"
                                                             value={formData.lossColour || ''}
                                                             onChange={handleInputChange}
@@ -1272,12 +1327,12 @@ const sortStoresGThenZ = (a, b) => {
                                                 <>
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Colour<span className="text-red-500">*</span>
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             name="lossColour"
-                                                            required
+                                                            required={!isBBStore(formData.store)}
                                                             placeholder="Enter Colour"
                                                             value={formData.lossColour || ''}
                                                             onChange={handleInputChange}
@@ -1334,6 +1389,8 @@ const sortStoresGThenZ = (a, b) => {
                                                             className="w-full h-11 border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white placeholder-gray-300 resize-none font-semibold"
                                                         />
                                                     </div>
+                                                </>
+                                            )}
                                                 </>
                                             )}
                                         </>
@@ -1589,12 +1646,12 @@ const sortStoresGThenZ = (a, b) => {
                                                     </div>
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Colour<span className="text-red-500">*</span>
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             name="lossColour"
-                                                            required
+                                                            required={!isBBStore(formData.store)}
                                                             placeholder="Enter Colour"
                                                             value={formData.lossColour || ''}
                                                             onChange={handleInputChange}
@@ -1802,16 +1859,61 @@ const sortStoresGThenZ = (a, b) => {
                                             </div>
 
                                             {/* Custom fields under sales categories */}
-                                            {((formData.subCategory || '').toLowerCase().trim() === 'shoe') && (
+                                            {isBBStore(formData.store) ? (
                                                 <>
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Colour<span className="text-red-500">*</span>
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             name="lossColour"
-                                                            required
+                                                            required={!isBBStore(formData.store)}
+                                                            placeholder="Enter Colour"
+                                                            value={formData.lossColour || ''}
+                                                            onChange={handleInputChange}
+                                                            className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white font-semibold"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-12 md:col-span-3">
+                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                            Price <span className="text-gray-400 font-normal">(Optional)</span>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="lossSalesPrice"
+                                                            placeholder="Enter Price"
+                                                            value={formData.lossSalesPrice || ''}
+                                                            onChange={handleInputChange}
+                                                            className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white font-semibold"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-12">
+                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                            Note <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <textarea required
+                                                            name="lossNote"
+                                                            rows={1}
+                                                            placeholder="Product Category / Item Name"
+                                                            value={formData.lossNote || ''}
+                                                            onChange={handleInputChange}
+                                                            className="w-full h-11 border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white placeholder-gray-300 resize-none font-semibold"
+                                                        />
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {((formData.subCategory || '').toLowerCase().trim() === 'shoe') && (
+                                                <>
+                                                    <div className="col-span-12 md:col-span-3">
+                                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="lossColour"
+                                                            required={!isBBStore(formData.store)}
                                                             placeholder="Enter Colour"
                                                             value={formData.lossColour || ''}
                                                             onChange={handleInputChange}
@@ -1875,12 +1977,12 @@ const sortStoresGThenZ = (a, b) => {
                                                 <>
                                                     <div className="col-span-12 md:col-span-3">
                                                         <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                                            Colour<span className="text-red-500">*</span>
+                                                            Colour {!isBBStore(formData.store) ? <span className="text-red-500">*</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             name="lossColour"
-                                                            required
+                                                            required={!isBBStore(formData.store)}
                                                             placeholder="Enter Colour"
                                                             value={formData.lossColour || ''}
                                                             onChange={handleInputChange}
@@ -1939,6 +2041,8 @@ const sortStoresGThenZ = (a, b) => {
                                                     </div>
                                                 </>
                                             )}
+                                                </>
+                                            )}
                                         </>
                                     )}
                                 </>
@@ -1976,30 +2080,32 @@ const sortStoresGThenZ = (a, b) => {
                             {formData.lossProductType && formData.lossProductType !== '' && (
                                 <>
                                     {/* Size dropdown */}
-                                    <div className="col-span-12 md:col-span-3">
-                                        <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                                            Select Size<span className="text-red-500">*</span>
-                                        </label>
-                                        <div className="relative">
-                                            <select
-                                                name="lossSize"
-                                                required
-                                                value={formData.lossSize || ''}
-                                                onChange={handleInputChange}
-                                                className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white cursor-pointer appearance-none pr-8 font-semibold"
-                                            >
-                                                <option value="">Select Size</option>
-                                                {['32', '34', '36', '38', '40', '42', '44', '46', '48', 'Others'].map((size) => (
-                                                    <option key={size} value={size}>{size}</option>
-                                                ))}
-                                            </select>
-                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-                                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                                </svg>
+                                    {!isBBStore(formData.store) && (
+                                        <div className="col-span-12 md:col-span-3">
+                                            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                                Select Size<span className="text-red-500">*</span>
+                                            </label>
+                                            <div className="relative">
+                                                <select
+                                                    name="lossSize"
+                                                    required
+                                                    value={formData.lossSize || ''}
+                                                    onChange={handleInputChange}
+                                                    className="w-full h-11 border border-gray-200 rounded-lg px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-800 bg-white cursor-pointer appearance-none pr-8 font-semibold"
+                                                >
+                                                    <option value="">Select Size</option>
+                                                    {['32', '34', '36', '38', '40', '42', '44', '46', '48', 'Others'].map((size) => (
+                                                        <option key={size} value={size}>{size}</option>
+                                                    ))}
+                                                </select>
+                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                    </svg>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     {/* Colour input field */}
                                     <div className="col-span-12 md:col-span-3">
@@ -2983,6 +3089,7 @@ const sortStoresGThenZ = (a, b) => {
             const prodTypeLower = (formData.lossProductType || '').toLowerCase().trim();
             const subCatLower = (formData.subCategory || '').toLowerCase().trim();
             const lossReasonLower = (formData.lossReason || '').toLowerCase().trim();
+            const isBB = isBBStore(formData.store);
 
             if (formData.category === 'Product') {
                 if (!formData.lossProductType || formData.lossProductType === '') {
@@ -2995,11 +3102,11 @@ const sortStoresGThenZ = (a, b) => {
                         alert('Please select a Sales Sub Category.');
                         return;
                     }
-                    if (!formData.lossColour || formData.lossColour.trim() === '') {
+                    if (!isBB && (!formData.lossColour || formData.lossColour.trim() === '')) {
                         alert('Please enter a Colour.');
                         return;
                     }
-                    if (!formData.lossSize || formData.lossSize === '') {
+                    if (!isBB && (!formData.lossSize || formData.lossSize === '')) {
                         alert('Please select a Size.');
                         return;
                     }
@@ -3009,11 +3116,11 @@ const sortStoresGThenZ = (a, b) => {
                         return;
                     }
                     if (lossReasonLower === 'product already booked') {
-                        if (!formData.lossSize || formData.lossSize === '') {
+                        if (!isBB && (!formData.lossSize || formData.lossSize === '')) {
                             alert('Please select a Size.');
                             return;
                         }
-                        if (!formData.lossColour || formData.lossColour.trim() === '') {
+                        if (!isBB && (!formData.lossColour || formData.lossColour.trim() === '')) {
                             alert('Please enter a Colour.');
                             return;
                         }
@@ -3028,7 +3135,7 @@ const sortStoresGThenZ = (a, b) => {
                             alert('Please enter a Work Type.');
                             return;
                         }
-                        if (!formData.lossSize || formData.lossSize === '') {
+                        if (!isBB && (!formData.lossSize || formData.lossSize === '')) {
                             alert('Please select a Size.');
                             return;
                         }
@@ -3043,7 +3150,7 @@ const sortStoresGThenZ = (a, b) => {
                             alert('Note is required when no attachment is provided.');
                             return;
                         }
-                        if (!formData.lossColour || formData.lossColour.trim() === '') {
+                        if (!isBB && (!formData.lossColour || formData.lossColour.trim() === '')) {
                             alert('Please enter or select a Colour.');
                             return;
                         }
@@ -3146,11 +3253,11 @@ const sortStoresGThenZ = (a, b) => {
                         alert('Please select a Product Type.');
                         return;
                     }
-                    if (!formData.lossSize || formData.lossSize === '') {
+                    if (!isBB && (!formData.lossSize || formData.lossSize === '')) {
                         alert('Please select a Size.');
                         return;
                     }
-                    if (!formData.lossColour || formData.lossColour.trim() === '') {
+                    if (!isBB && (!formData.lossColour || formData.lossColour.trim() === '')) {
                         alert('Please enter a Colour.');
                         return;
                     }
@@ -3258,7 +3365,9 @@ const sortStoresGThenZ = (a, b) => {
         const storeLower = (formData.store || '').toLowerCase().trim();
 
         if (storeLower) {
-            if (storeLower.includes('zorucci') || storeLower.startsWith('z')) {
+            if (isBBStore(formData.store)) {
+                options = ['Rental Product', 'Sale Product'];
+            } else if (storeLower.includes('zorucci') || storeLower.startsWith('z')) {
                 options = [
                     'Lehenga', 'Pakistani Lehenga', 'Arabic Lehenga', 'Gown', 'Body Cons', 'Saree', 'Party Wear', 'Sharara', 'Peplum', 'Jewellery', 'Sale Products'
                 ];
@@ -3270,7 +3379,7 @@ const sortStoresGThenZ = (a, b) => {
                 options = [
                     '2 Piece Suit', '3 Piece Suit', 'Bandhgala', 'Indowestern', 'Kurtha', 'Kids Suit',
                     'Lehenga', 'Pakistani Lehenga', 'Arabic Lehenga', 'Gown', 'Body Cons', 'Saree', 'Party Wear', 'Sharara', 'Peplum', 'Jewellery',
-                    'Sale Products'
+                    'Rental Product', 'Sale Product', 'Sale Products'
                 ];
             } else {
                 options = ['2 Piece Suit', '3 Piece Suit', 'Bandhgala', 'Indowestern', 'Kurtha', 'Kids Suit', 'Sale Products'];
@@ -3278,13 +3387,16 @@ const sortStoresGThenZ = (a, b) => {
         }
 
         if (formData.category === 'Customization') {
-            options = options.filter(opt => opt !== 'Sale Products');
+            options = options.filter(opt => opt !== 'Sale Products' && opt !== 'Sale Product');
         }
         return options;
     };
 
     const getCategoryOptions = () => {
         if (formData.status === 'Loss') {
+            if (isBBStore(formData.store)) {
+                return ['Product', 'Enquiry', 'Customization'];
+            }
             return ['Product', 'Enquiry', 'Dapper Squad', 'Customization'];
         }
         if (formData.status === 'Revisit') {
@@ -3295,14 +3407,35 @@ const sortStoresGThenZ = (a, b) => {
 
     const getSubCategoryOptions = () => {
         if (formData.status === 'Loss') {
+            const isBB = isBBStore(formData.store);
+
             if (formData.category === 'Product') {
                 if (isSalesProductType(formData.lossProductType)) {
+                    if (isBB) {
+                        return [
+                            'Select Sub Category',
+                            'Bridal Jewellery',
+                            'Bridal Accessories',
+                            'Bridal Clutches',
+                            'Bridal Footwears'
+                        ];
+                    }
                     return [
                         'Select Sub Category',
                         'Shoe',
                         'Shirt'
                     ];
                 } else {
+                    if (isBB) {
+                        return [
+                            'Select Reason',
+                            'Product Already Booked',
+                            'Design Not Available',
+                            'Colour Not Available',
+                            'Price',
+                            'Confirm Later'
+                        ];
+                    }
                     return [
                         'Select Reason',
                         'Product Already Booked',
@@ -3316,6 +3449,15 @@ const sortStoresGThenZ = (a, b) => {
             }
             if (formData.category === 'Enquiry') {
                 if (isSalesProductType(formData.lossProductType)) {
+                    if (isBB) {
+                        return [
+                            'Select Sub Category',
+                            'Bridal Jewellery',
+                            'Bridal Accessories',
+                            'Bridal Clutches',
+                            'Bridal Footwears'
+                        ];
+                    }
                     return [
                         'Select Sub Category',
                         'Shoe',
