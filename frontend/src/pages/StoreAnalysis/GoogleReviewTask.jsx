@@ -15,6 +15,10 @@ function isHiddenBranch(name) {
   const normalized = norm(name);
   const nonSalesBranches = ["office", "production", "warehouse"];
   if (nonSalesBranches.includes(normalized)) return true;
+  // Don't hide SG Test Store when explicitly enabled
+  if (normalized.includes("sg test store") || normalized === "test store" || normalized.includes("0094")) {
+    return false;
+  }
   if (normalized.startsWith("test ") || normalized.startsWith("test")) {
     const afterTest = normalized.replace(/^test\s*/, "").trim();
     if (afterTest.length > 0) return true;

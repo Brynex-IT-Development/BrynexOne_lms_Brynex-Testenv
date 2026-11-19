@@ -116,6 +116,8 @@ const BRANCH_LOCATION_MAPPING = {
   "g.mg road": "23", "g.mgroad": "23", "g mg road": "23", "gmg road": "23", "grooms mg road": "23", "suitor guy mg road": "23", "sg.mg road": "23", "sg.mgroad": "23", "sg mg road": "23",
   // BB-MG Road (loc 26)
   "bb mg road": "26", "bb.mg road": "26", "bb.mgroad": "26", "bb mgroad": "26", "bbmg road": "26", "bbmgroad": "26", "bridesberry mg road": "26", "brides berry mg road": "26", "b- mg road": "26", "b-mg road": "26",
+  // SG Test Store (locCode 0094)
+  "sg test store": "0094", "sg test": "0094", "test store": "0094",
   // Dappr Squad (loc 25)
   "dappr squad": "25", "crsrootments": "25"
 };
@@ -250,6 +252,8 @@ function getBranchLocationId(workingBranch) {
     "gkannur": "21",
     "gmgroad": "23",
     "bbmgroad": "26",
+    "sgteststore": "0094",
+    "teststore": "0094",
     "dapprsquad": "25"
   };
 
@@ -294,7 +298,9 @@ const STORE_TO_LOC_CODE = {
   "sgkannur": "716",
   "gmgroad": "718",
   "sgmgroad": "718",
-  "bbmgroad": "155"
+  "bbmgroad": "155",
+  "sgteststore": "0094",
+  "teststore": "0094"
 };
 
 function getBranchLocCode(workingBranch, branchesList) {
@@ -393,6 +399,10 @@ function isHiddenBranch(name) {
   // Non-sales branches: hide from all report views
   const nonSalesBranches = ["office", "production", "warehouse"];
   if (nonSalesBranches.includes(normalized)) return true;
+  // Don't hide SG Test Store when explicitly enabled
+  if (normalized.includes("sg test store") || normalized === "test store" || normalized.includes("0094")) {
+    return false;
+  }
   // Any test store
   if (normalized.startsWith("test ") || normalized.startsWith("test")) {
     const afterTest = normalized.replace(/^test\s*/, "").trim();
