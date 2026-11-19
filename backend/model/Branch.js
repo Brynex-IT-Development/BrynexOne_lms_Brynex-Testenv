@@ -23,7 +23,7 @@ const branchSchema = new mongoose.Schema({
     }, address: {
         type: String,
         default: "",
-        required: true
+        required: false
     },
     manager: {
         type: String,
